@@ -12,6 +12,21 @@ a.父传子：
 // 3.父传子:父变，子变，子变，父变，需要在父组件中定义对象，传递给子组件的就是对象的方式，子组件正常接收即可
 ```
 
+~~~txt
+子传父
+
+子组件通过this.$emit触发方法
+~~~
+
+~~~
+非父子：
+
+首先创造关系 main.js->Vue.prototype.Event=new Vue()
+总结：发送数据用e m i t 需 要 触 发 条 件 接 收 数 据 用 emit 需要触发条件 接收数据用emit需要触发条件接收数据用on
+~~~
+
+
+
 parent.vue 父组件
 
 ```vue
@@ -144,14 +159,119 @@ card.vue
    props:['teachers']
 ```
 
-b.子传父：
-
-c.非父子:
-
 2.is
+
+- 解决标签的固定搭配问题
+
+- 动态组件
+
+  ~~~vue
+  <template>
+    <div>
+      <!-- 1、解决标签的固定搭配；2、动态组件 -->
+      <ul>
+        <li is="vOne">
+          我是li内容-----
+          <!-- <v-one></v-one> -->
+        </li>
+      </ul>
+      <hr />
+      <!-- 动态组件切换 -->
+      <button @click="name = 'vOne'">one</button
+      ><button @click="name = 'vTwo'">two</button>
+      <div :is="name"></div>
+    </div>
+  </template>
+  <script>
+  import vOne from "./one";
+  import vTwo from "./two";
+  export default {
+    components: {
+      vOne,
+      vTwo,
+    },
+    data() {
+      return {
+        name: "vOne",
+      };
+    },
+  };
+  </script>
+  
+  ~~~
+
+  
 
 3.slot
 
-4.ref
+- 无名插槽
+
+- 具名插槽
+
+  ~~~vue
+  <template>
+   <div>solt
+  <v-one>
+      <!-- 无名插槽 -->
+      <!-- 在vOne中添加 <slot></slot> -->
+      <div>我是插入到one组件中的内容</div>
+  </v-one>
+  <hr>
+  <v-two>
+      <!-- 有名插槽 -->
+      <div slot='aa'>自先沉稳</div>
+      <div slot='bb'>而后爱人</div>
+  </v-two>
+  
+   </div>
+  </template>
+  
+  <script>
+  import vOne from './one'
+  import vTwo from './two'
+  export default {
+  components:{
+      vOne,
+      vTwo
+  }
+  }
+  </script>
+  <style>
+  </style>
+  
+  ~~~
+
+  
+
+4.ref(不建议使用)
+
+- ref 操作普通元素 就是获取到的dom元素
+- ref 操作的组件 获取的就是组件的数据和方法
+- 使用ref 需要通过this.$refs来获取
 
 5.jquery
+
+- npm install jquery --save
+
+- 哪个页面需要直接导入即可
+
+- 全局导入
+
+  ~~~vue
+  import $ from 'jquery'
+  mounted(){
+  	$('button').click(()=>{
+  		$('.box').width()
+  	})
+  }
+  在main.js中 
+  import $ from 'jquery'
+  Vue.prototype.$ = $;
+  //此时这个$是vue实例中的一个属性，所以需要通过this调用
+  this.$('button').click(()=>{
+  		this.$('.box').width()
+  })
+  
+  ~~~
+
+  

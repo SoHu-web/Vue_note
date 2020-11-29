@@ -18,7 +18,7 @@
 
 #### 单选框:  
 
-```js
+```html
  <!-- 单选框的使用  绑定的属性一定要与value的值保持一致，提交还是会提交value的值-->
  <div>
  性别: <input type="radio" name="sex" value="0" v-model='sex'>男
@@ -28,7 +28,7 @@
 
 #### 多选框：
 
-```js
+```html
  <!-- 多选框  1.如果初始值为数组:会把value的值赋值给数组  2.如果初始值是对象，则会把数据类型转为布尔值，那么最终的结果就会以true/false展示-->
  <div>
  <input type="checkbox" checked value="sing" v-model='hobby'>唱歌
@@ -49,7 +49,7 @@
 
 #### 下拉框:
 
-```js
+```html
 
 <!-- 下拉框 把初始值需要绑定到select上,还是根据value的值对select进行赋值-->
         <div>
@@ -64,7 +64,7 @@
 
 #### 文本域
 
-```js
+```html
 文本域:
 <div>
 <textarea  cols="30" rows="10" v-model='text'></textarea>

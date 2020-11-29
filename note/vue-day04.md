@@ -1,25 +1,5 @@
 ## vue-day04
 
-Q:1.动画的使用方法以及动画库的使用方式
-
-​	2.vue中的指令有哪些？
-
-​	3.vue中生命周期钩子函数有哪些？分别代表什么含义？
-
-​	4.filter的语法是什么？
-
-​	5.computed的特点是什么？
-
-​	6.watch与computed的区别？
-
-​	7.vue中的配置项有哪些？
-
-​	8.页面中新增加属性后页面不渲染问题怎么解决？
-
-​	9.数组中的forEach，some，every是如何使用的？
-
-​	10.格式化时间时的补零操作两种方法？
-
 1.组件
 
 特点：一组可复用的vue实例
@@ -32,11 +12,184 @@ Q:1.动画的使用方法以及动画库的使用方式
 
 2.命名规则
 
+- 不能以标签起名，包含大写
+- 建议用驼峰起名
+- 首字母大写，后面直接写名字。如果后面有大写需要转换为驼峰
+
 3.template模板
+
+~~~html
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Document</title>
+</head>
+<body>
+    <div id='app'>
+        <v-one></v-one>
+        <v-two></v-two>
+        <v-three></v-three>
+    </div>
+</body>
+<!-- 开发环境 -->
+<script src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js'></script>
+<script>
+    // 组件：一组可复用的vue实例
+    // 用法：全局定义,局部定义
+    // Vue.component('组件名',模板对象)
+    // components:{组件名:{模板对象}}
+//必须要写在实例对象之前
+Vue.component('vOne',{
+    // template:要往页面上渲染的模板
+    template:'<div>我是第一个组件</div>'
+})
+    let vm = new Vue({
+        el: '#app',
+        data: {},
+        methods: {
+        },
+        components:{
+          vTwo:{
+              template:'<div>我是第二个模板对象<div>abc</div></div>'
+          },
+          vThree:{
+              template:`<div>我是第二个模板对象
+                <h2>我是标题2</h2>
+              </div>`
+          }   
+        }
+    })
+    // 特点：template 有且只能有一个根元素 通常是div
+</script>
+</html>
+
+~~~
+
+
 
 4.data使用
 
+- 重点：组件中定义data为函数，原因是：为了共享数据但是又互相不干扰.
+
+  ~~~js
+   <div id='app'>
+          <div>{{msg}}</div>
+          <p>{{msg}}</p>
+          <button @click = 'change'>点击修改msg</button>
+          <hr>
+  
+          <v-one></v-one>
+          <v-one></v-one>
+      </div>
+      <template id="temp1">
+          <div>
+              <p>{{content}}</p>
+              <button @click='changeOne'>修改内容</button>
+          </div>
+      </template>
+  
+  ~~~
+
+  ~~~js
+  let vm = new Vue({
+          el: '#app',
+          data: {
+              msg:'abc'
+          },
+          methods: {
+              change(){
+                  this.msg='123'
+              }
+          },
+          components:{
+              vOne:{
+                  template:'#temp1',
+                  data(){
+                      return {
+                          content:'我要被修改了'
+                      }
+                  },
+                  methods: {
+                      changeOne(){
+                          this.content = '我被修改了'
+                      }
+                  },
+              }
+          }
+      })
+  
+  ~~~
+
+  总结:data定义为函数的原因:由于需要共享数据，但是又要互不干扰，所以定义为函数。
+
 5.组件嵌套
+
+注意：子组件只能在父组件中使用 子组件中的数据目前仅能供自己使用
+
+~~~js
+<div id='app'>
+        {{msg}}
+        <v-one></v-one>
+    </div>
+    <template id="temp1">
+        <div>
+            <h2>我是模板一</h2>
+            {{name}}
+            <!-- {{msg}} -->
+            <!-- <v-inner></v-inner> -->
+        </div>
+    </template>
+    <template id="temp2">
+        <div>
+            <h2>我是模板二</h2>  
+        </div>
+    </template>
+
+~~~
+
+~~~js
+let vm = new Vue({
+        el: '#app',
+        data: {
+            msg:'hello '
+        },
+        methods: {
+        },
+        components:{
+            vOne:{
+                template:'#temp1',
+                components:{
+                    vInner:{
+                        template:'<div>我是里层嵌套的模板<v-three></v-three></div>',
+                        components:{
+                            vThree:{
+                                template:'#temp2'
+                            }
+                        }
+                    },
+                    vOuter:{
+                    }
+                },
+                data(){
+                    return {
+                        name:'张三'
+                    }
+                }
+            }
+        }
+    })
+
+~~~
+
+总结：
+
+- 组件中关系：只有父子和非父子关系
+- 嵌套:子组件只能在父组件中使用
+- 组件中的data ：定义为方法，必须有返回值，同时返回值的类型为对象
+
+data 中的数据只能供自己使用 如果其他组件需要使用需要传值 比如：data,methods,filter,cmpputed,watch…
 
 6.后台管理页面实现
 

@@ -322,12 +322,4 @@ computed: {
        },
 ```
 
-bootstrap 
 
-### 作业：
-
-淘宝搜索：
-https://suggest.taobao.com/sug?
-code=utf-8
-&q=s&
-callback=jsonp299
