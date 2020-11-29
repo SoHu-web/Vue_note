@@ -193,33 +193,267 @@ data 中的数据只能供自己使用 如果其他组件需要使用需要传�
 
 6.后台管理页面实现
 
-7.脚手架
+注意：1.外层嵌套大盒子（container）； 2.划分布局 3.书写组件 4.组件嵌套 5.添加样式
 
-步骤：
+7.生命周期
 
-```js
-//全局安装webpack
-npm i webpack -g
+- 8个钩子函数中 mounted 是最常用的
 
-//查看版本
-webpack -v
+- v-if 会引起生命周期的改变；v-show 不会
 
-//全局安装vue脚手架
-npm i vue-cli -g
+  ~~~js
+  <div id='app'>
+          <div v-html='msg' v-if='isShow'></div>
+          <button @click='change'>点击</button>
+          <hr>
+          <v-one v-show='isShow'></v-one>
+      </div>
+      <template id="temp1">
+          <div>
+              <div v-if='show'>{{con}}</div>
+              <button @click='changeC'>点击切换内容</button>
+          </div>
+      </template>
+  
+  ~~~
 
-//查看版本
-vue -V
-//创建项目
-vue init webpack demo
+  ~~~js
+  let vm = new Vue({
+          el: '#app',
+          data: {
+              msg: 'hello world！',
+              isShow: true
+          },
+          methods: {
+              change() {
+                  this.isShow = !this.isShow
+              }
+          },
+          components: {
+              vOne: {
+                  template: '#temp1',
+                  data() {
+                      return {
+                          con: '我是组件模板',
+                          show: true
+                      }
+                  },
+                  methods: {
+                      changeC() {
+                         this.con = '我被修改了!!!!!!!'
+                      }
+                  },
+                  mounted() {
+                      console.log('组件内容挂载完成')
+                  },
+                  destroyed() {
+                      console.log('销毁执行了')
+                  },
+              }
+          },
+          mounted() {
+              console.log('vm内容挂载完成')
+          },
+          destroyed() {
+              console.log('vm销毁执行了')
+          },
+      })
+  
+  ~~~
 
-//进入项目
-cd demo 
+  上述案例生命周期的执行过程为：
 
-//启动 
-npm run dev //localhost:8080
+  - 首先是vm实例的生命周期执行beforeCreate，created，beforeMount，之后是到组件走生命周期beforeCreate，created，beforeMount，mounted，最后是走vm的mounted。
 
+  8.生命周期销毁
 
-注意：  安装cnpm方法  淘宝镜像
-npm i -g cnpm --registry=https://registry.npm.taobao.org  
-```
+  ~~~js
+  <body>
+      <div id='app'>
+          <div v-html='msg' v-if='isShow'></div>
+          <button @click='change'>点击</button>
+          <hr>
+          <v-one v-show='isShow'></v-one>
+          <!-- 生命周期  --8个钩子函数  mounted 是最常用的
+           v-if 会引起生命周期的改变
+            v-show  不会引起 -->
+      </div>
+      <template id="temp1">
+          <div>
+              <div v-if='show'>{{con}}</div>
+              <button @click='changeC'>点击切换内容</button>
+          </div>
+      </template>
+  </body>
+  <script src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js'></script>
+  <script>
+      let vm = new Vue({
+          el: '#app',
+          data: {
+              msg: 'hello world！',
+              isShow: true
+          },
+          methods: {
+              change() {
+                  this.isShow = !this.isShow
+              }
+          },
+          components: {
+              vOne: {
+                  template: '#temp1',
+                  data() {
+                      return {
+                          con: '我是组件模板',
+                          show: true
+                      }
+                  },
+                  methods: {
+                      changeC() {
+                         this.con = '我被修改了!!!!!!!'
+                      }
+                  },
+                  mounted() {
+                      console.log('组件内容挂载完成')
+                  },
+                  destroyed() {
+                      console.log('销毁执行了')
+                  },
+              }
+          },
+          mounted() {
+              console.log('vm内容挂载完成')
+          },
+          destroyed() {
+              console.log('vm销毁执行了')
+          },
+      })
+  </script>
+  
+  ~~~
+
+  9.脚手架
+
+  步骤：
+
+  - 全局安装webpack ： npm i webpack -g
+  - 查看版本 ：webpack -v
+  - 全局安装vue脚手架 2.x ：npm i vue-cli -g
+  - 查看版本：vue -V
+
+  以上操作只需要操作一次
+
+  - 创建项目 ：vue init webpack demo
+
+  - 进入项目 ：cd demo
+
+  - 启动 ：npm run dev //http://localhost:8080
+
+  - 注意：
+
+    - 安装cnpm方法 淘宝镜像
+
+    npm i -g cnpm --registry=https://registry.npm.taobao.org
+
+    - 名字：不能带大写；
+    - 全选n；
+    - 在当前文件夹中不能有vue.js这个文件
+
+  文件夹：
+
+  - index.html ->页面的入口文件
+
+  - main.js->程序的入口文件
+
+  - App.vue ->组件–>类似上午的containter
+
+  - build文件夹里放的所有的命令都是放的用来打包用的
+
+  - config文件夹放的是配置文件,里的index.js是
+
+  - src文件夹所有要用的文件都放在里面，src里的assets放的是静态资源：图片；components放的是组件
+
+  - .babelrc将es6转为es5
+
+  - README是说明
+
+  - npm run build
+
+    打包后的文件，生成dist文件夹交给后台的就是这个文件夹
+
+  **总结:**
+
+  后台项目：
+
+  - 划分组件
+
+  App.vue->container 整个容器
+
+  header,footer，main，left，right 都是单独的组件 需要用谁直接 import导入就行
+
+  //点击弹框
+
+  局部定义弹框 首先要有弹框组件 alertbtn.vue 哪用在哪里引入
+
+    ~~~vue
+  
+    ~~~
+<template>
+  <div class="left">
+      left
+      <v-alert></v-alert>
+  </div>
+</template>
+<script>
+import vAlert from './aletrBtn'
+export default {
+  components: {
+      vAlert
+  },
+  data() {
+    return {};
+  },
+  methods: {},
+  mounted() {},
+};
+</script>
+<style>
+.left{
+    width: 200px;
+    background: orange;
+}
+</style>
+
+    ~~~
+
+//全局引入弹框 需要在main.js中定义
+
+~~~js
+// 引入弹框的组件
+import vAlert from './components/aletrBtn.vue'
+Vue.component('vAlert',vAlert)
+
+~~~
+
+在其他页面只需要调用组件名即可 （v-alert）
+
+~~~vue
+<template>
+    <div class="header">
+        header
+        <v-alert></v-alert>
+    </div>
+</template>
+<script>
+export default {    
+}
+</script>
+<style>
+    .header{
+        width: 100vw;
+        height: 100px;
+        background: red;
+    }
+</style>
+
+~~~
 
